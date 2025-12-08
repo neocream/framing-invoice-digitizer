@@ -8,21 +8,22 @@ var data = []
 
 app.post('/api/invoices', 
   (req, res) => {
-    // handle errors
     if(req.body.amount === "") {
       return res.status(400).json({error:"Amount cannot be empty."});
     }
-    
     if(isNaN(req.body.amount)) {
       return res.status(400).json({error:"Amount must be a number."});
     }
-
+    const {amount, date, vendor, status} = req.body;
+    data.push({amount, date, vendor, status});
     return res.status(201).json({message:"success"});
-    
 })
 
 app.get('/api/csv-export', (req, res) => {
-  res.json({res: 'success'});
+  if (data.length < 0) {
+    return res.status(400).json({error: "No receipts added yet."})
+  }
+  res.json({message: data});
 })
 
 app.listen(port, () => {
