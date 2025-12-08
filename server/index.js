@@ -1,14 +1,24 @@
 const express = require('express');
+const { body, validationResult } = require("express-validator"); 
 const app = express();
 const port = 3000;
+app.use(express.json())
 
-app.use(express.json());
+var data = []
 
-app.post('/api/invoices', [
-],
-    (req, res) => {
-    const { name, amount, date } = req.body;
-    return res.json({ data: name, amount, date })
+app.post('/api/invoices', 
+  (req, res) => {
+    // handle errors
+    if(req.body.amount === "") {
+      return res.status(400).json({error:"Amount cannot be empty."});
+    }
+    
+    if(isNaN(req.body.amount)) {
+      return res.status(400).json({error:"Amount must be a number."});
+    }
+
+    return res.status(201).json({message:"success"});
+    
 })
 
 app.get('/api/csv-export', (req, res) => {
