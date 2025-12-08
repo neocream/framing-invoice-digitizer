@@ -4,8 +4,7 @@ const app = express();
 const port = 3000;
 app.use(express.json())
 
-var data = []
-const workbook = new excelJs.Workbook();
+var data = [];
 
 app.post('/api/invoices', 
   (req, res) => {
