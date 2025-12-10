@@ -19,7 +19,10 @@ const vendorList = [
 ];
 
 app.post('/api/invoices', (req, res) => {
-  const {date, vendor, amount, status} = req.body;
+  var {date, vendor, amount, status} = req.body;
+    // standardize vendor
+  vendor = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
+  console.log(stringSimilarity.findBestMatch(vendor, vendorList))
   // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
   const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");
   const sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
@@ -33,12 +36,9 @@ app.post('/api/invoices', (req, res) => {
   if(isNaN(amount)) {
     return res.status(400).json({error:"Amount must be a number."});
   }
-  
-  // standardize vendor
-  const bestMatch = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
 
   hashedData.push(sha256);
-  data.push([date, bestMatch, amount, status]);
+  data.push([date, vendor, amount, status]);
   return res.status(201).json({message:"success"});
 })
 
