@@ -95,8 +95,7 @@ const handleUpload = async (e: React.FormEvent) => {
       });
 
       if (!response.ok) {
-        console.log(response)
-        throw new Error(`Response not ok, error code ${response.status}`);
+        throw new Error(`Response not ok, error code ${response.status} `);
       }
 
       const report = await response.blob();
