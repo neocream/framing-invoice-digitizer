@@ -40,3 +40,6 @@ home depot receipts
 costco receipts
 - https://thewellplannedkitchen.com/wp-content/uploads/2016/05/Costco-Receipt-600x800.jpg
 - https://preview.redd.it/why-is-tobacco-listed-on-top-of-my-receipt-v0-3dhna2akuuvc1.jpeg?auto=webp&s=f6143a72c8fcf439a3b7b18cf89811e699a173d1
+
+## Limitations
+- currently a huge issue with this app is that the vendors are limited to a vendor list defined in the backend code as fuzzy matching needs a list to check against. if a receipt from a vendor not listed is submitted, it will normalize it to whatever defined vendor is the closest. I wanted to test with setting a minimum threshhold to accept, but string-similarity doesn't seem to be working as intended and will always return bestMatch with a rating of 1. Given more time, I would seek out a library utilising dice's coefficient or levenshtein distance that isn't deprecated like string-similarity.  
