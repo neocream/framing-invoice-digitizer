@@ -9,9 +9,9 @@ by Erin Nie
 - under options, (CORS) is set to * to allow traffic from all ips
 - set the IP whitelist to the IP of the machine running the app for security
 ##### HTTP Request to OCR.space Node:
-- should come preconfigured with an API key
+- should come preconfigured with API key
 ##### Mistral Cloud Chat Model Node:
-- may need API key 
+- should come preconfigured with API key
 
 ### Client
 - in line 26 change to url for newly imported n8n workflow
