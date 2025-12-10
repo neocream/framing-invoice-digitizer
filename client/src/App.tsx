@@ -9,10 +9,11 @@ function App() {
     const data = await fetch('http://localhost:3000/api/invoices')
     .then(response => {
       if(!response.ok) {
-        throw new Error('Response not ok');
+        throw new Error(`Response not ok, error code ${response.status}`);
       }
       return response.json();
     })
+    .catch(err => console.error(err));
     setInvoices(data);
   }
 
@@ -26,13 +27,14 @@ function App() {
     })
     .then(response => {
       if(!response.ok) {
-        throw new Error('Response not ok');
+        throw new Error(`Response not ok, error code ${response.status}`);
       }
       return response.json();
     })
     .then(data => {
       return data;
     })
+    .catch(err => console.error(err));
     return response;
   };
 
@@ -51,7 +53,6 @@ function App() {
     }
 
     // send invoice to backend
-    console.log(payload);
     await fetch('http://localhost:3000/api/invoices', {
       method:'POST',
       headers: {
@@ -61,13 +62,14 @@ function App() {
     })
     .then(response => {
       if(!response.ok){
-        throw new Error('Response not ok');
+        throw new Error(`Response not ok, error code ${response.status}`);
       }
       return response.json();
     })
     .then(data => {
       return data;
-    }); 
+    })
+    .catch(err => console.error(err));
   
     // finally refresh invoices feed
     await fetchInvoices();
