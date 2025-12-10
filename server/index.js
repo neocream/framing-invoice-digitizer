@@ -9,8 +9,8 @@ const port = 3000;
 app.use(express.json())
 app.use(cors());
 
-var data = [];
-var hashedData = [];
+var invoices = [];
+var hashedInvoices = [];
 // create a list to check vendors against for standardization
 const vendorList = [
   "Costco",
@@ -20,16 +20,19 @@ const vendorList = [
 
 app.post('/api/invoices', (req, res) => {
   var {date, vendor, amount, status} = req.body;
-    // standardize vendor
+  // standardize vendor
   vendor = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
   console.log(stringSimilarity.findBestMatch(vendor, vendorList))
+
   // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
   const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");
   const sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
+
   // check if hash already exists
-  if(hashedData.includes(sha256)) {
+  if(hashedInvoices.includes(sha256)) {
     return res.status(400).json({error:"Invoice already exists."});
   }
+  // check amount value
   if(amount === "") {  
     return res.status(400).json({error:"Amount cannot be empty."});
   }
@@ -37,19 +40,20 @@ app.post('/api/invoices', (req, res) => {
     return res.status(400).json({error:"Amount must be a number."});
   }
 
-  hashedData.push(sha256);
-  data.push([date, vendor, amount, status]);
+  hashedInvoices.push(sha256);
+  invoices.push([date, vendor, amount, status]);
   return res.status(201).json({message:"success"});
 })
 
 app.get('/api/invoices', (req, res) => {
-  return res.json(data);
+  return res.json(invoices);
 })
 
 app.get('/api/csv-export', async (req, res) => {
-  if (data.length === 0) {
-    return res.status(400).json({error: "No receipts added yet."})
+  if (invoices.length === 0) {
+    return res.status(400).json({error: "No invoices added yet."})
   }
+  // write to csv with excelJs
   try {
     const workbook = new excelJs.Workbook()
     const worksheet = workbook.addWorksheet('Receipts');
@@ -61,7 +65,7 @@ app.get('/api/csv-export', async (req, res) => {
       { header: 'Status', key: 'status'},
     ];
 
-    data.forEach(row => {
+    invoices.forEach(row => {
       worksheet.addRow(row);
     });
 
