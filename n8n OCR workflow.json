@@ -76,7 +76,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=From OCR extracted receipt text below, extract the following information: Vendor, Total, Date.\n\nVendor should be the first word in the receipt.\nTotal is the largest decimal deliminated number.\nDate should follow mm/dd/yy format. \n{{ $json.ParsedResults[0].ParsedText }}",
+        "text": "=From OCR extracted receipt text below, extract the following information: Vendor, Total, Date.\n\nVendor should be the first word in the receipt, but may not always. If text starts with \"more saving\", then set Vendor to Home Depot. \nTotal is the largest decimal deliminated number.\nDate should follow mm/dd/yy format. \n{{ $json.ParsedResults[0].ParsedText }}",
         "hasOutputParser": true,
         "options": {}
       },
@@ -247,7 +247,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1cbc228c-07f3-4a01-9514-4447b3fdf8e7",
+  "versionId": "6d87330a-52a8-4d03-82da-919794373143",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "460a5808e0e5f7a9ea2bd82881e7130de60cd32a2cbfb78c883ab851ed6cc28e"
