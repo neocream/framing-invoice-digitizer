@@ -1,6 +1,7 @@
 const express = require('express');
 const excelJs = require('exceljs');
 const cors = require('cors');
+const crypto = require('crypto');
 const app = express();
 const port = 3000;
 
@@ -8,15 +9,25 @@ app.use(express.json())
 app.use(cors());
 
 var data = [];
+var hashedData = [];
 
 app.post('/api/invoices', (req, res) => {
   const {date, vendor, amount, status} = req.body;
+  // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
+  const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");
+  const sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
+  // check if hash already exists
+  if(hashedData.includes(sha256)) {
+    return res.status(400).json({error:"Invoice already exists."});
+  }
   if(amount === "") {  
     return res.status(400).json({error:"Amount cannot be empty."});
   }
   if(isNaN(amount)) {
     return res.status(400).json({error:"Amount must be a number."});
   }
+  
+  hashedData.push(sha256);
   data.push([date, vendor, amount, status]);
   return res.status(201).json({message:"success"});
 })
