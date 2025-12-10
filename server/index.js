@@ -1,22 +1,25 @@
 const express = require('express');
 const excelJs = require('exceljs');
 const cors = require('cors');
+const axios = require('axios');
 const app = express();
 const port = 3000;
+
 app.use(express.json())
 app.use(cors());
 
 var data = [];
+const webhookUrl = 
 
 app.post('/api/invoices', 
   (req, res) => {
-    if(req.body.amount === "") {
+    const {date, vendor, amount, status} = req.body;
+    if(amount === "") {  
       return res.status(400).json({error:"Amount cannot be empty."});
     }
-    if(isNaN(req.body.amount)) {
+    if(isNaN(amount)) {
       return res.status(400).json({error:"Amount must be a number."});
     }
-    const {date, vendor, amount, status} = req.body;
     data.push([date, vendor, amount, status]);
     return res.status(201).json({message:"success"});
 })
