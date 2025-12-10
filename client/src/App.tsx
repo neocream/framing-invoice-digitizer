@@ -50,14 +50,19 @@ const handleUpload = async (e: React.FormEvent) => {
   e.preventDefault();
   setError(null);
 
+  // check that imageUrl isn't empty
+  if(!imageUrl) {
+    setError("Image URL cannot be empty.");
+    return;
+  }
   try {
     // fetch from n8n
     const invoice = await calln8n(imageUrl);
     if (!invoice) {
-      setError("No invoice returned from n8n.");
+      setError("No invoice returned from n8n. Check to make sure n8n workflow is running and try again.");
       return;
     } 
-    
+
     if(invoice.error) {
       setError("Image could not be read from URL. Check the URL and try again.");
       return;
@@ -81,7 +86,9 @@ const handleUpload = async (e: React.FormEvent) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Response not ok, error code ${response.status}`);
+      const data = await response.json();
+      setError(data.error);
+      return;
     }
 
     const data = await response.json();
@@ -96,6 +103,7 @@ const handleUpload = async (e: React.FormEvent) => {
 };
 
   const downloadReport = async () => {
+    setError(null);
     try {
       const response = await fetch('http://localhost:3000/api/csv-export', {
         method: 'GET',
@@ -103,7 +111,11 @@ const handleUpload = async (e: React.FormEvent) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Response not ok, error code ${response.status} `);
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+        setError(data.error);
+        return;
       }
 
       const report = await response.blob();
@@ -135,7 +147,7 @@ const handleUpload = async (e: React.FormEvent) => {
         {/* invoice feed */}
         <ul>
           {/* slapdash implementation with array indexes because invoices are stored to be exported as csv. With more time I would store 
-              invoices normally as an array of objects then in csv export transform into 2d array of strings */}
+              invoices normally as an array of objects then in csv export transform into 2d array of strings for csv */}
           {invoices.map((invoice, i) => <li key={i}>{invoice[0]} - {invoice[1]} - ${invoice[2]} - {invoice[3]}</li>)}
         </ul>
       </div>
