@@ -38,5 +38,5 @@ home depot receipts
 - https://i.redd.it/g7nlrooxxwk41.jpg
 
 costco receipts
-- htttps://thewellplannedkitchen.com/wp-content/uploads/2016/05/Costco-Receipt-600x800.jpg
+- https://thewellplannedkitchen.com/wp-content/uploads/2016/05/Costco-Receipt-600x800.jpg
 - https://preview.redd.it/why-is-tobacco-listed-on-top-of-my-receipt-v0-3dhna2akuuvc1.jpeg?auto=webp&s=f6143a72c8fcf439a3b7b18cf89811e699a173d1
