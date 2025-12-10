@@ -3,6 +3,18 @@ import './App.css';
 
 function App() {
   const [imageUrl, setImageUrl] = useState('');
+  const [invoices, setInvoices] = useState([]);
+
+  const fetchInvoices = async () => {
+    const data = await fetch('http://localhost:3000/api/invoices')
+    .then(response => {
+      if(!response.ok) {
+        throw new Error('Response not ok');
+      }
+      return response.json();
+    })
+    setInvoices(data);
+  }
 
   const calln8n = async (imageUrl: string) => {
     const n8nurl = 'https://enie.app.n8n.cloud/webhook-test/4eaaf056-4d9c-44c9-b766-9a1ddb228fd7';
@@ -26,7 +38,10 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // fetch from n8n
     const invoice = await calln8n(imageUrl);
+
     // rename properties to match what backend is expecting and add status
     const payload ={
       date: invoice.Date,
@@ -34,6 +49,8 @@ function App() {
       amount:invoice.Total,
       status: "processed"
     }
+
+    // fetch from backend
     console.log(payload);
     const response = await fetch('http://localhost:3000/api/invoices', {
       method:'POST',
@@ -51,8 +68,9 @@ function App() {
     .then(data => {
       return data;
     }); 
-    console.log(response);
-
+  
+    // finally refresh invoices feed
+    await fetchInvoices();
   };
 
   return (
@@ -67,6 +85,9 @@ function App() {
       </div>
       <div>
         {/* invoice feed */}
+        <ul>
+          {invoices.map(invoice => <li>{invoice}</li>)}
+        </ul>
       </div>
       <div>
         {/* download report */}

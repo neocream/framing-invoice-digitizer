@@ -9,19 +9,21 @@ app.use(express.json())
 app.use(cors());
 
 var data = [];
-const webhookUrl = 
 
-app.post('/api/invoices', 
-  (req, res) => {
-    const {date, vendor, amount, status} = req.body;
-    if(amount === "") {  
-      return res.status(400).json({error:"Amount cannot be empty."});
-    }
-    if(isNaN(amount)) {
-      return res.status(400).json({error:"Amount must be a number."});
-    }
-    data.push([date, vendor, amount, status]);
-    return res.status(201).json({message:"success"});
+app.post('/api/invoices', (req, res) => {
+  const {date, vendor, amount, status} = req.body;
+  if(amount === "") {  
+    return res.status(400).json({error:"Amount cannot be empty."});
+  }
+  if(isNaN(amount)) {
+    return res.status(400).json({error:"Amount must be a number."});
+  }
+  data.push([date, vendor, amount, status]);
+  return res.status(201).json({message:"success"});
+})
+
+app.get('/api/invoices', (req, res) => {
+  return res.json(data);
 })
 
 app.get('/api/csv-export', async (req, res) => {
