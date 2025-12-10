@@ -36,7 +36,7 @@ function App() {
     return response;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // fetch from n8n
@@ -50,9 +50,9 @@ function App() {
       status: "processed"
     }
 
-    // fetch from backend
+    // send invoice to backend
     console.log(payload);
-    const response = await fetch('http://localhost:3000/api/invoices', {
+    await fetch('http://localhost:3000/api/invoices', {
       method:'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -77,11 +77,9 @@ function App() {
     <>
       <div>
         {/* upload section */}
-        <form onSubmit={handleSubmit}>
-          <label>Image URL</label>   
-          <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value)}/>
-          <button>Send</button>
-        </form>
+        <label>Image URL</label>   
+        <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value)}/>
+        <button onClick={handleUpload}>Send</button>
       </div>
       <div>
         {/* invoice feed */}
@@ -91,6 +89,7 @@ function App() {
       </div>
       <div>
         {/* download report */}
+        <button>Download Invoices as CSV</button>
       </div>
     </>
   );
