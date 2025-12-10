@@ -2,6 +2,7 @@ const express = require('express');
 const excelJs = require('exceljs');
 const cors = require('cors');
 const crypto = require('crypto');
+var stringSimilarity = require("string-similarity");
 const app = express();
 const port = 3000;
 
@@ -10,6 +11,12 @@ app.use(cors());
 
 var data = [];
 var hashedData = [];
+// create a list to check vendors against for standardization
+const vendorList = [
+  "Costco",
+  "RONA",
+  "Home Depot"
+];
 
 app.post('/api/invoices', (req, res) => {
   const {date, vendor, amount, status} = req.body;
@@ -27,8 +34,11 @@ app.post('/api/invoices', (req, res) => {
     return res.status(400).json({error:"Amount must be a number."});
   }
   
+  // standardize vendor
+  const bestMatch = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
+
   hashedData.push(sha256);
-  data.push([date, vendor, amount, status]);
+  data.push([date, bestMatch, amount, status]);
   return res.status(201).json({message:"success"});
 })
 
