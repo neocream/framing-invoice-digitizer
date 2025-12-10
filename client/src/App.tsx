@@ -4,6 +4,7 @@ import './App.css';
 function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [invoices, setInvoices] = useState([]);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchInvoices = async () => {
     try {
@@ -47,12 +48,19 @@ const calln8n = async (imageUrl: string) => {
 
 const handleUpload = async (e: React.FormEvent) => {
   e.preventDefault();
+  setError(null);
 
   try {
     // fetch from n8n
     const invoice = await calln8n(imageUrl);
     if (!invoice) {
-      throw new Error("No invoice returned from calln8n");
+      setError("No invoice returned from n8n.");
+      return;
+    } 
+    
+    if(invoice.error) {
+      setError("Image could not be read from URL. Check the URL and try again.");
+      return;
     }
 
     // rename properties to match backend expectations
@@ -121,6 +129,7 @@ const handleUpload = async (e: React.FormEvent) => {
         <label>Image URL</label>   
         <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value)}/>
         <button onClick={handleUpload}>Send</button>
+        {error && <p>{error}</p>}
       </div>
       <div>
         {/* invoice feed */}
