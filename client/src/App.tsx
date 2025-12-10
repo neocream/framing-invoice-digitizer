@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -133,6 +133,10 @@ const handleUpload = async (e: React.FormEvent) => {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
 
   return (
     <>
