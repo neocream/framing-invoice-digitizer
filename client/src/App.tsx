@@ -125,7 +125,9 @@ const handleUpload = async (e: React.FormEvent) => {
       <div>
         {/* invoice feed */}
         <ul>
-          {invoices.map(invoice => <li>{invoice}</li>)}
+          {/* slapdash implementation with array indexes because invoices are stored to be exported as csv. With more time I would store 
+              invoices normally as an array of objects then in csv export transform into 2d array of strings */}
+          {invoices.map((invoice, i) => <li key={i}>{invoice[0]} - {invoice[1]} - ${invoice[2]} - {invoice[3]}</li>)}
         </ul>
       </div>
       <div>
