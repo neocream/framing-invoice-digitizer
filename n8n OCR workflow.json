@@ -5,7 +5,10 @@
       "parameters": {
         "path": "4eaaf056-4d9c-44c9-b766-9a1ddb228fd7",
         "responseMode": "responseNode",
-        "options": {}
+        "options": {
+          "allowedOrigins": "*",
+          "ipWhitelist": ""
+        }
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
@@ -58,7 +61,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
       "typeVersion": 1,
       "position": [
-        176,
+        384,
         208
       ],
       "id": "da0c5887-b52c-42ea-980f-1f63a9755aa4",
@@ -80,7 +83,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        240,
+        448,
         0
       ],
       "id": "637e3e35-d429-4f19-b3ae-58c36d784805",
@@ -93,7 +96,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        416,
+        624,
         208
       ],
       "id": "c0302ec9-fc01-4a54-81b4-b9ba8603285f",
@@ -108,11 +111,60 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        592,
+        800,
         0
       ],
       "id": "24961d0e-4df1-411c-9e85-cb245d9d0726",
       "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3221a8e8-c92d-4590-b943-e0675def17c9",
+              "leftValue": "={{ $json.IsErroredOnProcessing }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        0
+      ],
+      "id": "ef9b8b7a-ca0b-4bf2-af76-66b29cefbd66",
+      "name": "If OCR returns an error"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"error\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        128,
+        272
+      ],
+      "id": "4d8c83ae-b83b-4c5d-a199-3f2cf4086af1",
+      "name": "Respond to Webhook1"
     }
   ],
   "pinData": {},
@@ -132,7 +184,7 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "If OCR returns an error",
             "type": "main",
             "index": 0
           }
@@ -171,13 +223,31 @@
           }
         ]
       ]
+    },
+    "If OCR returns an error": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "cec7f08b-549b-4149-b7cb-56ec340c11ca",
+  "versionId": "1cbc228c-07f3-4a01-9514-4447b3fdf8e7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "460a5808e0e5f7a9ea2bd82881e7130de60cd32a2cbfb78c883ab851ed6cc28e"
