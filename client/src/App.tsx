@@ -75,6 +75,34 @@ function App() {
     await fetchInvoices();
   };
 
+  const downloadReport = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/csv-export', {
+        method: 'GET',
+        headers: { accept: '*/*' }
+      });
+
+      if (!response.ok) {
+        console.log(response)
+        throw new Error(`Response not ok, error code ${response.status}`);
+      }
+
+      const report = await response.blob();
+      // generate url from returned blob and immediately download it
+      const url = URL.createObjectURL(report);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'report.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <div>
@@ -91,7 +119,7 @@ function App() {
       </div>
       <div>
         {/* download report */}
-        <button>Download Invoices as CSV</button>
+        <button onClick={downloadReport}>Download Report</button>
       </div>
     </>
   );
