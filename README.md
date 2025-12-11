@@ -43,3 +43,5 @@ costco receipts
 
 ## Limitations
 - currently a huge issue with this app is that the vendors are limited to a vendor list defined in the backend code as fuzzy matching needs a list to check against. if a receipt from a vendor not listed is submitted, it will normalize it to whatever defined vendor is the closest. I wanted to test with setting a minimum threshhold to accept, but string-similarity doesn't seem to be working as intended and will always return bestMatch with a rating of 1. Given more time, I would seek out a library utilising dice's coefficient or levenshtein distance that isn't deprecated like string-similarity.  
+
+- curerntly the form doesn't have an indication that it's loading after the send button is clicked. This shouldn't be too hard to implement.
