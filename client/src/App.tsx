@@ -152,14 +152,29 @@ const handleUpload = async (e: React.FormEvent) => {
         <button onClick={handleUpload}>Send</button>
         {error && <p className='error'>{error}</p>}
       </div>
+
       <div>
         {/* invoice feed */}
-        <ul>
           {/* slapdash implementation with array indexes because invoices are stored to be exported as csv. With more time I would store 
               invoices normally as an array of objects then in csv export transform into 2d array of strings for csv */}
-          {invoices.map((invoice, i) => <li key={i}>{invoice[0]} - {invoice[1]} - ${invoice[2]} - {invoice[3]}</li>)}
-        </ul>
+        <table>
+          <tr>
+            <th>Date</th>
+            <th>Vendor</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+          {invoices.map((invoice, i) => {
+            return <tr key={i}>
+              <td>{invoice[0]}</td>
+              <td>{invoice[1]}</td>
+              <td>${invoice[2]}</td>
+              <td>{invoice[3]}</td>
+            </tr>
+          })}
+        </table>
       </div>
+      
       <div>
         {/* download report */}
         <button onClick={downloadReport}>Download Report</button>
