@@ -16,7 +16,6 @@ label {
   font-size: 1rem;
 }
 
-/* input */
 input[type="text"] {
   padding: 0.5rem 0.8rem;
   border: 1px solid #ccc;
@@ -31,7 +30,6 @@ input[type="text"]:focus {
   border-color: #4a90e2;
 }
 
-/* button */
 button {
   padding: 0.5rem 1rem;
   background: #4a90e2;
