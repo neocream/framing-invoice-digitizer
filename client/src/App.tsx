@@ -136,16 +136,21 @@ const handleUpload = async (e: React.FormEvent) => {
 
   useEffect(() => {
     fetchInvoices();
+    document.title = 'Framing Invoice Digitizer';
   }, []);
 
   return (
-    <>
+    <> 
+      {/* set favicon */}
+      <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 16 16'><text x='0' y='14'>🏗️</text></svg>"/>
+      <h2>Framing Invoice Digitizer</h2>
+      
       <div>
         {/* upload section */}
         <label>Image URL</label>   
         <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value)}/>
         <button onClick={handleUpload}>Send</button>
-        {error && <p>{error}</p>}
+        {error && <p className='error'>{error}</p>}
       </div>
       <div>
         {/* invoice feed */}
