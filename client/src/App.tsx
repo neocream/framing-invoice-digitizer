@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+interface FormError {
+  component: string,
+  message: string
+}
+
 function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [invoices, setInvoices] = useState([]);
-  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<FormError | null>(null);
 
   const fetchInvoices = async () => {
     try {
@@ -48,23 +53,24 @@ function App() {
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setFormError(null);
 
     // check that imageUrl isn't empty
     if(!imageUrl) {
-      setError("Image URL cannot be empty.");
+      setFormError({component: 'input', message:'Image URL cannot be empty.'});
+
       return;
     }
     try {
       // fetch from n8n
       const invoice = await calln8n(imageUrl);
       if (!invoice) {
-        setError("No invoice returned from n8n. Check to make sure n8n workflow is running and try again.");
+        setFormError({component: 'input', message:'No invoice returned from n8n. Check to make sure n8n workflow is running and try again.'});
         return;
       } 
 
       if(invoice.error) {
-        setError("Image could not be read from URL. Check the URL and try again.");
+        setFormError({component:"input",message:"Image could not be read from URL. Check the URL and try again."});
         return;
       }
 
@@ -87,7 +93,7 @@ function App() {
 
       if (!response.ok) {
         const data = await response.json();
-        setError(data.error);
+        setFormError({component:'input',message:data.error});
         return;
       }
 
@@ -103,7 +109,7 @@ function App() {
   };
 
   const downloadReport = async () => {
-    setError(null);
+    setFormError(null);
     try {
       const response = await fetch('http://localhost:3000/api/csv-export', {
         method: 'GET',
@@ -114,7 +120,7 @@ function App() {
         console.log(response);
         const data = await response.json();
         console.log(data);
-        setError(data.error);
+        setFormError({component:'report',message:data.error});
         return;
       }
 
@@ -150,7 +156,8 @@ function App() {
         <label>Image URL</label>   
         <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value)}/>
         <button onClick={handleUpload}>Send</button>
-        {error && <p className='error'>{error}</p>}
+        {/* input errors */}
+        {formError && formError.component === 'input' && <p className='error'>{formError.message}</p>}
       </div>
 
       <div>
@@ -178,6 +185,8 @@ function App() {
       <div>
         {/* download report */}
         <button onClick={downloadReport}>Download Report</button>
+        {/* report errors */}
+        {formError && formError.component === 'report' && <p className='error'>{formError.message}</p>}
       </div>
     </>
   );
