@@ -1,6 +1,12 @@
 # framing-invoice-digitizer
-Mid Automation Developer technical project \
-by Erin Nie
+
+## TODO
+- add more error handling
+- add more static typing and interfaces
+- fix vendor standardization (look into a different string similarity library?)
+- add more comments
+- change array of arrays for invoices into array of objects
+- look into ocr that supports more image formats
 
 ## Setup:
 ### N8N
