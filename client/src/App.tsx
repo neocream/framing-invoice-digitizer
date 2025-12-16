@@ -22,85 +22,85 @@ function App() {
   }
 };
 
-const calln8n = async (imageUrl: string) => {
-  const n8nurl = 'https://enie.app.n8n.cloud/webhook-test/4eaaf056-4d9c-44c9-b766-9a1ddb228fd7';
+  const calln8n = async (imageUrl: string) => {
+    const n8nurl = 'https://enie.app.n8n.cloud/webhook-test/4eaaf056-4d9c-44c9-b766-9a1ddb228fd7';
 
-  try {
-    const response = await fetch(`${n8nurl}?image-url=${encodeURIComponent(imageUrl)}`, {
-      method: 'GET',
-      headers: {
-        accept: '*/*'
+    try {
+      const response = await fetch(`${n8nurl}?image-url=${encodeURIComponent(imageUrl)}`, {
+        method: 'GET',
+        headers: {
+          accept: '*/*'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Response not ok, error code ${response.status}`);
       }
-    });
 
-    if (!response.ok) {
-      throw new Error(`Response not ok, error code ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-
-  } catch (err) {
-    console.error('calln8n error:', err);
-    return null; 
-  }
-};
-
-const handleUpload = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError(null);
-
-  // check that imageUrl isn't empty
-  if(!imageUrl) {
-    setError("Image URL cannot be empty.");
-    return;
-  }
-  try {
-    // fetch from n8n
-    const invoice = await calln8n(imageUrl);
-    if (!invoice) {
-      setError("No invoice returned from n8n. Check to make sure n8n workflow is running and try again.");
-      return;
-    } 
-
-    if(invoice.error) {
-      setError("Image could not be read from URL. Check the URL and try again.");
-      return;
-    }
-
-    // rename properties to match backend expectations
-    const payload = {
-      date: invoice.Date,
-      vendor: invoice.Vendor,
-      amount: invoice.Total,
-      status: "processed",
-    };
-
-    // send invoice to backend
-    const response = await fetch('http://localhost:3000/api/invoices', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
       const data = await response.json();
-      setError(data.error);
+      return data;
+
+    } catch (err) {
+      console.error('calln8n error:', err);
+      return null; 
+    }
+  };
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    // check that imageUrl isn't empty
+    if(!imageUrl) {
+      setError("Image URL cannot be empty.");
       return;
     }
+    try {
+      // fetch from n8n
+      const invoice = await calln8n(imageUrl);
+      if (!invoice) {
+        setError("No invoice returned from n8n. Check to make sure n8n workflow is running and try again.");
+        return;
+      } 
 
-    const data = await response.json();
-    console.log("Invoice saved:", data);
+      if(invoice.error) {
+        setError("Image could not be read from URL. Check the URL and try again.");
+        return;
+      }
 
-    // refresh invoices feed
-    await fetchInvoices();
+      // rename properties to match backend expectations
+      const payload = {
+        date: invoice.Date,
+        vendor: invoice.Vendor,
+        amount: invoice.Total,
+        status: "processed",
+      };
 
-  } catch (err) {
-    console.error('handleUpload error:', err);
-  }
-};
+      // send invoice to backend
+      const response = await fetch('http://localhost:3000/api/invoices', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Invoice saved:", data);
+
+      // refresh invoices feed
+      await fetchInvoices();
+
+    } catch (err) {
+      console.error('handleUpload error:', err);
+    }
+  };
 
   const downloadReport = async () => {
     setError(null);
