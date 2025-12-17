@@ -18,22 +18,26 @@ const vendorList = [
   "RONA",
   "Home Depot"
 ];
+const MATCH_THRESHOLD = 0.5;
 
 // create new invoice
 // standardize vendor and hash before pushing into created invoices array
 app.post('/api/invoices', (req, res) => {
   try {
-    let {date, vendor, amount, status} = req.body;
+    var {date, vendor, amount, status} = req.body;
     // standardize vendor
-    vendor = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
-    console.log(stringSimilarity.findBestMatch(vendor, vendorList))
+    // compare vendor against every entry in vendorList and return highest match
+    const scoresList = vendorList.map((standardVendor) => stringSimilarity(vendor, standardVendor));
+    const highestScoreIndex = scoresList.indexOf(Math.max(...scoresList));
+    // TODO: if match % is under threshold, add to vendorList as a new vendor
+    vendor = vendorList[highestScoreIndex];
 
     // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
     const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");
-    const sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
+    var sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
 
   } catch (err) {
-    console.error("Something went wrong while parsing invoice data.");
+    console.error(err.message);
     return res.status(500).json({error:"Invoice data could not be parsed."});
   }
   // check if hash already exists
