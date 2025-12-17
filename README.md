@@ -5,10 +5,13 @@
     - send error to front end when back end encounters error
 - add more static typing and interfaces
 - add loading indicator
-- fix vendor standardization (look into a different string similarity library?)
 - add more comments
 - change array of arrays for invoices into array of objects
 - look into ocr that supports more image formats
+
+## DONE
+- fix vendor standardization (look into a different string similarity library?) 
+- added error handling to standardization and hashing
 
 ## Setup:
 ### N8N
