@@ -55,11 +55,11 @@ app.post('/api/invoices', (req, res) => {
   hashedInvoices.push(sha256);
   invoices.push([date, vendor, amount, status]);
   return res.status(201).json({message:"success"});
-})
+});
 
 app.get('/api/invoices', (req, res) => {
   return res.json(invoices);
-})
+});
 
 app.get('/api/csv-export', async (req, res) => {
   if (invoices.length === 0) {
@@ -91,8 +91,8 @@ app.get('/api/csv-export', async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: "Exporting csv failed." });
   }
-})
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
-})
+});

@@ -54,7 +54,7 @@ function App() {
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
-
+    
     // check that imageUrl isn't empty
     if(!imageUrl) {
       setFormError({component: 'input', message:'Image URL cannot be empty.'});
@@ -99,6 +99,7 @@ function App() {
 
       const data = await response.json();
       console.log("Invoice saved:", data);
+      setImageUrl('');
 
       // refresh invoices feed
       await fetchInvoices();
