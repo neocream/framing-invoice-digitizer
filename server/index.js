@@ -19,15 +19,20 @@ const vendorList = [
 ];
 
 app.post('/api/invoices', (req, res) => {
-  var {date, vendor, amount, status} = req.body;
-  // standardize vendor
-  vendor = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
-  console.log(stringSimilarity.findBestMatch(vendor, vendorList))
+  try {
+    var {date, vendor, amount, status} = req.body;
+    // standardize vendor
+    vendor = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
+    console.log(stringSimilarity.findBestMatch(vendor, vendorList))
 
-  // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
-  const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");
-  const sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
+    // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
+    const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");
+    const sha256 = crypto.createHash('sha256').update(dataString).digest('hex');
 
+  } catch (err) {
+    console.error("Something went wrong while parsing invoice data.");
+    return res.status(500).json({error:"Invoice data could not be parsed."});
+  }
   // check if hash already exists
   if(hashedInvoices.includes(sha256)) {
     return res.status(400).json({error:"Invoice already exists."});
