@@ -2,15 +2,15 @@ const express = require('express');
 const excelJs = require('exceljs');
 const cors = require('cors');
 const crypto = require('crypto');
-var stringSimilarity = require("string-similarity");
+const stringSimilarity = require("string-similarity");
 const app = express();
 const port = 3000;
 
 app.use(express.json())
 app.use(cors());
 
-var invoices = [];
-var hashedInvoices = [];
+let invoices = [];
+let hashedInvoices = [];
 // create a list to check vendors against for standardization
 const vendorList = [
   "Costco",
@@ -18,9 +18,11 @@ const vendorList = [
   "Home Depot"
 ];
 
+// create new invoice
+// standardize vendor and hash before pushing into created invoices array
 app.post('/api/invoices', (req, res) => {
   try {
-    var {date, vendor, amount, status} = req.body;
+    let {date, vendor, amount, status} = req.body;
     // standardize vendor
     vendor = stringSimilarity.findBestMatch(vendor, vendorList).bestMatch.target;
     console.log(stringSimilarity.findBestMatch(vendor, vendorList))
