@@ -10,7 +10,8 @@
 - look into ocr that supports more image formats
 
 ## DONE
-- fix vendor standardization (look into a different string similarity library?) 
+- fix vendor standardization by changing to string-similarity-js
+- changed require statements to import for consistency 
 - added error handling to standardization and hashing
 
 ## Setup:
