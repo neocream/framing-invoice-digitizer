@@ -1,8 +1,9 @@
-const express = require('express');
-const excelJs = require('exceljs');
-const cors = require('cors');
-const crypto = require('crypto');
-const stringSimilarity = require("string-similarity");
+import { stringSimilarity } from 'string-similarity-js';
+import express from 'express';
+import ExcelJS from 'exceljs';
+import cors from 'cors';
+import crypto from 'crypto';
+
 const app = express();
 const port = 3000;
 
@@ -60,9 +61,9 @@ app.get('/api/csv-export', async (req, res) => {
   if (invoices.length === 0) {
     return res.status(400).json({error: "No invoices added yet."})
   }
-  // write to csv with excelJs
+  // write to csv with ExcelJS
   try {
-    const workbook = new excelJs.Workbook()
+    const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet('Receipts');
 
     worksheet.columns = [
