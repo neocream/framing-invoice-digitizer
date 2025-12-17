@@ -165,12 +165,13 @@ function App() {
           {/* slapdash implementation with array indexes because invoices are stored to be exported as csv. With more time I would store 
               invoices normally as an array of objects then in csv export transform into 2d array of strings for csv */}
         <table>
+          {invoices.length > 0 && 
           <tr>
             <th>Date</th>
             <th>Vendor</th>
             <th>Amount</th>
             <th>Status</th>
-          </tr>
+          </tr>}
           {invoices.map((invoice, i) => {
             return <tr key={i}>
               <td>{invoice[0]}</td>
