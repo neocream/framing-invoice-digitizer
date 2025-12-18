@@ -13,12 +13,12 @@ app.use(cors());
 let invoices = [];
 let hashedInvoices = [];
 // create a list to check vendors against for standardization
-const vendorList = [
+let vendorList = [
   "Costco",
   "RONA",
   "Home Depot"
 ];
-const MATCH_THRESHOLD = 0.5;
+const MATCH_THRESHOLD = 0.4;
 
 // create new invoice
 // standardize vendor and hash before pushing into created invoices array
@@ -28,9 +28,14 @@ app.post('/api/invoices', (req, res) => {
     // standardize vendor
     // compare vendor against every entry in vendorList and return highest match
     const scoresList = vendorList.map((standardVendor) => stringSimilarity(vendor, standardVendor));
-    const highestScoreIndex = scoresList.indexOf(Math.max(...scoresList));
-    // TODO: if match % is under threshold, add to vendorList as a new vendor
-    vendor = vendorList[highestScoreIndex];
+    const highestScore = Math.max(...scoresList);
+    const highestScoreIndex = scoresList.indexOf(highestScore);
+    // if match % is under threshold, add to vendorList as a new vendor
+    if (highestScore < MATCH_THRESHOLD) {
+      vendorList.push(vendor);
+    } else{
+      vendor = vendorList[highestScoreIndex];
+    }
 
     // create a string from data to hash with by combining all properties, stripping spaces, and setting to uppercase
     const dataString = `${date}${vendor}${amount}`.toUpperCase().replace(/\s/g, "");

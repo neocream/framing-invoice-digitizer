@@ -13,6 +13,8 @@
 - fix vendor standardization by changing to string-similarity-js
 - changed require statements to import for consistency 
 - added error handling to standardization and hashing
+- added functionality to add vendor onto vendor list if it doesn't already exist
+- added loading indicator via disabling text input
 
 ## Setup:
 ### N8N
