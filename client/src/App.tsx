@@ -10,6 +10,7 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [invoices, setInvoices] = useState([]);
   const [formError, setFormError] = useState<FormError | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchInvoices = async () => {
     try {
@@ -58,19 +59,21 @@ function App() {
     // check that imageUrl isn't empty
     if(!imageUrl) {
       setFormError({component: 'input', message:'Image URL cannot be empty.'});
-
       return;
     }
     try {
+      setIsLoading(true);
       // fetch from n8n
       const invoice = await calln8n(imageUrl);
       if (!invoice) {
         setFormError({component: 'input', message:'No invoice returned from n8n. Check to make sure n8n workflow is running and try again.'});
+        setIsLoading(false);
         return;
       } 
 
       if(invoice.error) {
         setFormError({component:"input",message:"Image could not be read from URL. Check the URL and try again."});
+        setIsLoading(false);
         return;
       }
 
@@ -94,11 +97,13 @@ function App() {
       if (!response.ok) {
         const data = await response.json();
         setFormError({component:'input',message:data.error});
+        setIsLoading(false);
         return;
       }
 
       const data = await response.json();
       console.log("Invoice saved:", data);
+      setIsLoading(false);
       setImageUrl('');
 
       // refresh invoices feed
@@ -155,8 +160,8 @@ function App() {
       <div>
         {/* upload section */}
         <label>Image URL</label>   
-        <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value)}/>
-        <button onClick={handleUpload}>Send</button>
+        <input type='text' value={imageUrl} onChange={e=> setImageUrl(e.target.value) } disabled={isLoading}/>
+        <button onClick={handleUpload} disabled={isLoading}>Send</button>
         {/* input errors */}
         {formError && formError.component === 'input' && <p className='error'>{formError.message}</p>}
       </div>
